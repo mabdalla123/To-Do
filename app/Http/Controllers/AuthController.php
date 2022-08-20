@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -17,7 +18,7 @@ class AuthController extends Controller
     
         $credentials = request(['email', 'password']);
         if (!auth()->attempt($credentials)) {
-            $request->session()->regenerate();
+            
 
             return response()->json([
                 'message' => 'The given data was invalid.',
@@ -37,6 +38,22 @@ class AuthController extends Controller
         ]);
     }
 
+
+    public function Register(Request $request)
+    {
+        $credentials =$request->validate([
+            'name'=>'required|string',
+            'email'=>'required|email|unique:users,email',
+            'password'=>'required|min:5|max:16'
+        ]);
+
+    
+        $credentials['password'] = Hash::make($credentials['password']);
+
+        //confirmed
+        $user =User::create($credentials);
+        return $user;
+    }
 
     public function logout()
     {

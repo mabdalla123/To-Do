@@ -19,8 +19,13 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::post('login',[AuthController::class,'Login'])->name('login');
-Route::get('logout', [AuthController::class,'logout'])->name('logout');
+Route::middleware('guest')-> group(function (){
+
+    // Guest routs
+    Route::post('login',[AuthController::class,'Login'])->name('login');
+    Route::get('logout', [AuthController::class,'logout'])->name('logout');
+    Route::post('register', [AuthController::class,'register'])->name('register');
+});
 
 Route::middleware('auth:sanctum')-> group(function (){
 
